@@ -1,35 +1,57 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect} from 'react';
+import { AuthProvider } from './hooks/useAuth';
 
-function App() {
-  const [count, setCount] = useState(0)
+import { BrowserRouter as Router, Routes, Route } from "react-router";
+
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/app-sidebar';
+import { SiteHeader } from '@/components/site-header';
+
+import Navbar from '@/components/Navbar';
+import Home from '@/pages/Home';
+
+// import FestivalsIndex from '@/pages/festivals/Index';
+// import FestivalsShow from '@/pages/festivals/Show';
+// import FestivalsCreate from '@/pages/festivals/Create';
+// import FestivalsEdit from '@/pages/festivals/Edit';
+
+
+export default function App() {
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Router>
+      <AuthProvider>
+      <SidebarProvider
+        style={{
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        }}
+      >
+        <AppSidebar variant="inset" />
+        <SidebarInset>
+          <SiteHeader />
+          {/* <Navbar onLogin={onLogin} loggedIn={loggedIn} /> */}
 
-export default App
+          <div className="flex flex-1 flex-col">
+            <div className="@container/main flex flex-1 flex-col gap-2">
+              <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 mx-6">
+                {/* Main content */}
+                <Routes>
+                  <Route
+                    path="/"
+                    element={<Home />}
+                  />
+
+
+
+
+                </Routes>
+              </div>
+            </div>
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
+      </AuthProvider>
+    </Router>
+  );
+}
