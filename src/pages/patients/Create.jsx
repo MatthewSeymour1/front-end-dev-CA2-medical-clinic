@@ -12,7 +12,8 @@ export default function Create() {
         last_name: "",
         phone: "",
         email: "",
-        specialisation: "",
+        address: "",
+        date_of_birth: "",
     });
     const navigate = useNavigate();
     const { token } = useAuth();
@@ -24,11 +25,11 @@ export default function Create() {
         });
     };
 
-    const createDoctor = async () => {
+    const createPatient = async () => {
 
         const options = {
             method: "POST",
-            url: `/doctors`,
+            url: `/patients`,
             headers: {
                 Authorization: `Bearer ${token}`
             },
@@ -38,9 +39,9 @@ export default function Create() {
         try {
             let response = await axios.request(options);
             console.log(response.data);
-            navigate('/doctors', { state: { 
+            navigate('/patients', { state: { 
                 type: 'success',
-                message: `Doctor "${response.data.first_name}" created successfully` 
+                message: `Patient "${response.data.first_name}" created successfully` 
             }});
         } catch (err) {
             console.log(err);
@@ -51,12 +52,12 @@ export default function Create() {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(form);
-        createDoctor();
+        createPatient();
     };
 
   return (
     <>
-        <h1>Create a new Doctor</h1>
+        <h1>Create a new Patient</h1>
         <form onSubmit={handleSubmit}>
             <Input 
                 type="text" 
@@ -89,19 +90,22 @@ export default function Create() {
                 value={form.email} 
                 onChange={handleChange} 
             />
-            <select
-                name="specialisation"
-                value={form.specialisation}
+            <Input 
+                className="mt-2"
+                type="text" 
+                placeholder="Address" 
+                name="address" 
+                value={form.address} 
                 onChange={handleChange}
-                className="mt-2 border rounded-md p-2 w-full"
-            >
-                <option value="" disabled hidden className="text-gray-400">Specialisation</option>
-                <option value="Podiatrist">Podiatrist</option>
-                <option value="Dermatologist">Dermatologist</option>
-                <option value="Pediatrician">Pediatrician</option>
-                <option value="Psychiatrist">Psychiatrist</option>
-                <option value="General Practitioner">General Practitioner</option>
-            </select>
+            />
+            <Input 
+                className="mt-2"
+                type="text" 
+                placeholder="Date of Birth" 
+                name="date_of_birth" 
+                value={form.date_of_birth} 
+                onChange={handleChange}
+            />
             <Button 
                 className="mt-4 cursor-pointer" 
                 variant="outline" 

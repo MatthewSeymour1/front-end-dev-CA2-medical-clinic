@@ -12,16 +12,17 @@ export default function Edit() {
         last_name: "",
         phone: "",
         email: "",
-        specialisation: "",
+        address: "",
+        date_of_birth: "",
     });
 
     const { token } = useAuth();
 
     useEffect(() => {
-        const fetchDoctor = async () => {
+        const fetchPatient = async () => {
             const options = {
                 method: "GET",
-                url: `/doctors/${id}`,
+                url: `/patients/${id}`,
                 headers: {
                 Authorization: `Bearer ${token}`,
                 },
@@ -30,20 +31,21 @@ export default function Edit() {
             try {
                 let response = await axios.request(options);
                 console.log(response.data);
-                let doctor = response.data;
+                let patient = response.data;
                 setForm({
-                    first_name: doctor.first_name,
-                    last_name: doctor.last_name,
-                    phone: doctor.phone.replace(/\s+/g, ""),
-                    email: doctor.email,
-                    specialisation: doctor.specialisation,
+                    first_name: patient.first_name,
+                    last_name: patient.last_name,
+                    phone: patient.phone.replace(/\s+/g, ""),
+                    email: patient.email,
+                    address: patient.address,
+                    date_of_birth: new Date(patient.date_of_birth * 1000).toISOString().split("T")[0],
                 });
             } catch (err) {
                 console.log(err);
             }
         };
 
-        fetchDoctor();
+        fetchPatient();
     }, []);
 
     const navigate = useNavigate();
@@ -56,11 +58,11 @@ export default function Edit() {
         });
     };
 
-    const updateDoctor = async () => {
+    const updatePatient = async () => {
 
         const options = {
             method: "PATCH",
-            url: `/doctors/${id}`,
+            url: `/patients/${id}`,
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -70,7 +72,7 @@ export default function Edit() {
         try {
             let response = await axios.request(options);
             console.log(response.data);
-            navigate("/doctors");
+            navigate("/patients");
             } catch (err) {
             console.log(err);
         }
@@ -79,12 +81,12 @@ export default function Edit() {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(form);
-        updateDoctor();
+        updatePatient();
     };
 
     return (
         <>
-            <h1>Update Doctor</h1>
+            <h1>Update Patient</h1>
             <form onSubmit={handleSubmit}>
                 <Input 
                     type="text" 
@@ -117,19 +119,22 @@ export default function Edit() {
                     value={form.email} 
                     onChange={handleChange} 
                 />
-                <select
-                    name="specialisation"
-                    value={form.specialisation}
+                <Input 
+                    className="mt-2"
+                    type="text" 
+                    placeholder="Address" 
+                    name="address" 
+                    value={form.address} 
                     onChange={handleChange}
-                    className="mt-2 w-full rounded-md border p-2"
-                >
-                    <option value="" disabled hidden>Specialisation</option>
-                    <option value="Podiatrist">Podiatrist</option>
-                    <option value="Dermatologist">Dermatologist</option>
-                    <option value="Pediatrician">Pediatrician</option>
-                    <option value="Psychiatrist">Psychiatrist</option>
-                    <option value="General Practitioner">General Practitioner</option>
-                </select>
+                />
+                <Input 
+                    className="mt-2"
+                    type="text" 
+                    placeholder="Date of Birth" 
+                    name="date_of_birth" 
+                    value={form.date_of_birth} 
+                    onChange={handleChange}
+                />
                 <Button className="mt-4 cursor-pointer" variant="outline" type="submit">
                 Submit
                 </Button>

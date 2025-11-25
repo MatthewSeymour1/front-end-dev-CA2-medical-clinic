@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
   IconVaccine,
-  IconTheater,
+  IconPillFilled,
   IconDashboard,
   IconMicrophone2,
   IconInnerShadowTop,
@@ -42,9 +42,9 @@ const data = {
       icon: IconVaccine,
     },
     {
-      title: "Stages",
-      url: "#",
-      icon: IconTheater,
+      title: "Patients",
+      url: "/patients",
+      icon: IconPillFilled,
     },
     {
       title: "Performers",
