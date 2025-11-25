@@ -6,13 +6,13 @@ import { Eye, Pencil } from "lucide-react";
 import DeleteBtn from "@/components/DeleteBtn";
 
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
 
@@ -27,87 +27,85 @@ import { toast } from "sonner";
 // } from "@/components/ui/card";
 
 export default function Index() {
-  const [festivals, setFestivals] = useState([]);
+    const [doctors, setDoctors] = useState([]);
 
-  const navigate = useNavigate();
-  
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchFestivals = async () => {
-      const options = {
-        method: "GET",
-        url: "/festivals",
-      };
 
-      try {
-        let response = await axios.request(options);
-        console.log(response.data);
-        setFestivals(response.data);
-      } catch (err) {
-        console.log(err);
-      }
+    useEffect(() => {
+        const fetchDoctors = async () => {
+        const options = {
+            method: "GET",
+            url: "/doctors",
+        };
+
+        try {
+            let response = await axios.request(options);
+            console.log(response.data);
+            setDoctors(response.data);
+        } catch (err) {
+            console.log(err);
+        }
+        };
+
+        fetchDoctors();
+    }, []);
+
+    const onDeleteCallback = (id) => {
+        toast.success("Doctor deleted successfully");
+        setDoctors(doctors.filter(doctor => doctor.id !== id));
     };
 
-    fetchFestivals();
-  }, []);
-
-  const onDeleteCallback = (id) => {
-    toast.success("Festival deleted successfully");
-    setFestivals(festivals.filter(festival => festival.id !== id));
-  
-  };
-
-  return (
-    <>
-    
-      <Button
-        asChild
-        variant='outline'
-        className='mb-4 mr-auto block'
-      ><Link size='sm' to={`/festivals/create`}>Create New Festival</Link>
-      </Button>
+    return (
+        <>
+        
+        <Button asChild variant='outline'className='mb-4 mr-auto block'>
+            <Link size='sm' to={`/doctors/create`}>Create New Doctor</Link>
+        </Button>
 
 
-    <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Title</TableHead>
-          <TableHead>City</TableHead>
-          <TableHead>Start Date</TableHead>
-          <TableHead>End Date</TableHead>
-          <TableHead></TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {festivals.map((festival) => (
-          <TableRow key={festival.id}>
-            <TableCell>{festival.title}</TableCell>
-            <TableCell>{festival.city}</TableCell>
-            <TableCell>{festival.start_date}</TableCell>
-            <TableCell>{festival.end_date}</TableCell>
-            <TableCell>
-              <div className="flex gap-2">
-              <Button 
-                className="cursor-pointer hover:border-blue-500"
-                variant="outline"
-                size="icon"
-                onClick={() => navigate(`/festivals/${festival.id}`)}
-              ><Eye /></Button>
-              <Button 
-                className="cursor-pointer hover:border-blue-500"
-                variant="outline"
-                size="icon"
-                onClick={() => navigate(`/festivals/${festival.id}/edit`)}
-              ><Pencil /></Button>
-              <DeleteBtn onDeleteCallback={onDeleteCallback} resource="festivals" id={festival.id} />
-              </div>
+        <Table>
+            <TableCaption>A list of your recent invoices.</TableCaption>
+            <TableHeader>
+                <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Specialisation</TableHead>
+                <TableHead>Phone Number</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Number of Appointments</TableHead>
+                <TableHead></TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {doctors.map((doctor) => (
+                    <TableRow key={doctor.id}>
+                        <TableCell>{doctor.first_name + " " + doctor.last_name}</TableCell>
+                        <TableCell>{doctor.specialisation}</TableCell>
+                        <TableCell>{doctor.phone}</TableCell>
+                        <TableCell>{doctor.email}</TableCell>
+                        <TableCell>{doctor.appointments.length}</TableCell>
+                        <TableCell>
+                            <div className="flex gap-2">
+                            <Button 
+                                className="cursor-pointer hover:border-blue-500"
+                                variant="outline"
+                                size="icon"
+                                onClick={() => navigate(`/doctors/${doctor.id}`)}
+                            ><Eye /></Button>
+                            <Button 
+                                className="cursor-pointer hover:border-blue-500"
+                                variant="outline"
+                                size="icon"
+                                onClick={() => navigate(`/doctors/${doctor.id}/edit`)}
+                            ><Pencil /></Button>
+                            <DeleteBtn onDeleteCallback={onDeleteCallback} resource="doctors" id={doctor.id} />
+                            </div>
 
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-    </>
-  );
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+        </>
+    );
 }

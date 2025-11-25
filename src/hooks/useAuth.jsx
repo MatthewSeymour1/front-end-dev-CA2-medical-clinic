@@ -53,6 +53,7 @@ export const AuthProvider = ({ children }) => {
         onLogout
     };
 
+
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 
 };

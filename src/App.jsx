@@ -10,10 +10,10 @@ import { SiteHeader } from '@/components/site-header';
 import Navbar from '@/components/Navbar';
 import Home from '@/pages/Home';
 
-// import FestivalsIndex from '@/pages/festivals/Index';
-// import FestivalsShow from '@/pages/festivals/Show';
-// import FestivalsCreate from '@/pages/festivals/Create';
-// import FestivalsEdit from '@/pages/festivals/Edit';
+import DoctorsIndex from '@/pages/doctors/Index';
+import DoctorsShow from '@/pages/doctors/Show';
+import DoctorsCreate from '@/pages/doctors/Create';
+import DoctorsEdit from '@/pages/doctors/Edit';
 
 
 export default function App() {
@@ -37,13 +37,13 @@ export default function App() {
               <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 mx-6">
                 {/* Main content */}
                 <Routes>
-                  <Route
-                    path="/"
-                    element={<Home />}
-                  />
+                    
+                    <Route path="/" element={<Home />} />
 
-
-
+                    <Route path="/doctors" element={<DoctorsIndex />} />
+                    <Route path="/doctors/:id" element={<DoctorsShow />} />
+                    <Route path="/doctors/create" element={<DoctorsCreate />} />
+                    <Route path="/doctors/:id/edit" element={<DoctorsEdit />} />
 
                 </Routes>
               </div>
