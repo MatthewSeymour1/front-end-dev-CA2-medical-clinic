@@ -137,8 +137,8 @@ export default function Index() {
                         return (
                             <TableRow key={app.id}>
                                 <TableCell>{new Date(app.appointment_date * 1000).toLocaleString()}</TableCell>
-                                <TableCell>Dr {doctor.first_name + doctor.last_name}</TableCell>
-                                <TableCell>{patient.first_name + patient.last_name}</TableCell>
+                                <TableCell>Dr {doctor.first_name + " " + doctor.last_name}</TableCell>
+                                <TableCell>{patient.first_name + " " + patient.last_name}</TableCell>
                                 <TableCell>
                                     <div className="flex gap-2">
                                     <Button 

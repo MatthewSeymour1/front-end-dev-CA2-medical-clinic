@@ -21,7 +21,8 @@ import PatientsCreate from '@/pages/patients/Create';
 import PatientsEdit from '@/pages/patients/Edit';
 import PatientsAppointments from '@/pages/patients/appointments';
 
-import AppoinmentsIndex from '@/pages/appointments/Index';
+import AppointmentsIndex from '@/pages/appointments/Index';
+import AppointmentsEdit from '@/pages/appointments/Edit';
 
 export default function App() {
 
@@ -58,7 +59,8 @@ export default function App() {
                     <Route path="/patients/:id/edit" element={<PatientsEdit />} />
                     <Route path="/patients/:id/appointments" element={<PatientsAppointments />} />
 
-                    <Route path="/appointments" element={<AppoinmentsIndex />} />
+                    <Route path="/appointments" element={<AppointmentsIndex />} />
+                    <Route path="/appointments/:id/edit" element={<AppointmentsEdit />} />
                     
                 </Routes>
               </div>
