@@ -3,7 +3,7 @@ import {
   IconVaccine,
   IconPillFilled,
   IconDashboard,
-  IconMicrophone2,
+  IconCalendarCheck,
   IconInnerShadowTop,
   IconMusic,
 } from "@tabler/icons-react";
@@ -47,9 +47,9 @@ const data = {
       icon: IconPillFilled,
     },
     {
-      title: "Performers",
-      url: "#",
-      icon: IconMicrophone2,
+      title: "Appointments",
+      url: "/appointments",
+      icon: IconCalendarCheck,
     },
     {
       title: "Shows",

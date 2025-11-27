@@ -129,29 +129,3 @@ export default function Appointment() {
 
     );
 }
-
-
-
-
-        // <Card className="w-full max-w-md">
-        //     <CardHeader>
-        //         <CardTitle>{patient.first_name} {patient.last_name}'s Appointments: </CardTitle>
-        //         <CardDescription>
-        //             {patient.first_name}
-        //         </CardDescription>
-        //     </CardHeader>
-        //     <CardContent>
-
-        //         {appointment.map((app) => {
-        //             return (
-        //                 <p>{app.appointment_date}</p>
-        //             );
-        //         })}
-        //         <Button asChild>
-        //             <Link to={`/patients/${patient.id}`}>Back</Link>
-        //         </Button>
-
-        //     </CardContent>
-        //     <CardFooter className="flex-col gap-2">
-        //     </CardFooter>
-        // </Card>
