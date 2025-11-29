@@ -22,7 +22,9 @@ import PatientsEdit from '@/pages/patients/Edit';
 import PatientsAppointments from '@/pages/patients/appointments';
 
 import AppointmentsIndex from '@/pages/appointments/Index';
+import AppointmentsShow from '@/pages/appointments/Show';
 import AppointmentsEdit from '@/pages/appointments/Edit';
+import AppointmentsCreate from '@/pages/appointments/Create';
 
 export default function App() {
 
@@ -60,6 +62,8 @@ export default function App() {
                     <Route path="/patients/:id/appointments" element={<PatientsAppointments />} />
 
                     <Route path="/appointments" element={<AppointmentsIndex />} />
+                    <Route path="/appointments/:id" element={<AppointmentsShow />} />
+                    <Route path="/appointments/create" element={<AppointmentsCreate />} />
                     <Route path="/appointments/:id/edit" element={<AppointmentsEdit />} />
                     
                 </Routes>

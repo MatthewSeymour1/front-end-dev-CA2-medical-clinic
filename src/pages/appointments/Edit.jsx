@@ -13,6 +13,7 @@ export default function Edit() {
         patient_id: "",
     });
     const [doctors, setDoctors] = useState([]);
+    const [patients, setPatients] = useState([]);
     const navigate = useNavigate();
     const { id } = useParams();
     const { token } = useAuth();
@@ -64,6 +65,26 @@ export default function Edit() {
     }, []);
 
 
+    useEffect(() => {
+        const fetchPatients = async () => {
+        const options = {
+            method: "GET",
+            url: "/patients",
+        };
+
+        try {
+            let response = await axios.request(options);
+            console.log(response.data);
+            setPatients(response.data);
+        } catch (err) {
+            console.log(err);
+        }
+        };
+
+        fetchPatients();
+    }, []);
+
+
 
     const handleChange = (e) => {
         setForm({
@@ -106,7 +127,7 @@ export default function Edit() {
                     type="text" 
                     placeholder="Appointment Date" 
                     name="appointment_date" 
-                    value={new Date(form.appointment_date * 1000).toISOString().slice(0,16)} 
+                    value={form.appointment_date} 
                     onChange={handleChange} 
                 />
                 <select
@@ -127,14 +148,24 @@ export default function Edit() {
                 }
 
                 </select>
-                <Input 
-                    className="mt-2"
-                    type="text" 
-                    placeholder="Patient ID" 
+                <select 
                     name="patient_id" 
                     value={form.patient_id} 
                     onChange={handleChange} 
-                />
+                    className="mt-2 w-full rounded-md border p-2"
+                >
+                <option value="" disabled hidden>Patient</option>
+                {
+                    patients.map((pat) => {
+                        return (
+                            <option key={pat.id} value={pat.id}>
+                                Dr. {pat.first_name} {pat.last_name}
+                            </option>
+                        )
+                    })
+                }
+
+                </select>
                 <Button className="mt-4 cursor-pointer" variant="outline" type="submit">
                 Submit
                 </Button>
