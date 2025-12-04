@@ -73,7 +73,11 @@ export default function Create() {
             headers: {
                 Authorization: `Bearer ${token}`
             },
-            data: form
+            data: {
+                appointment_date: form.appointment_date,
+                doctor_id: Number(form.doctor_id),
+                patient_id: Number(form.patient_id),
+            }
         };
 
         try {
