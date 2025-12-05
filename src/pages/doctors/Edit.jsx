@@ -81,7 +81,7 @@ export default function Edit() {
                 form.reset({
                     first_name: doctor.first_name,
                     last_name: doctor.last_name,
-                    phone: doctor.phone.replace(/\s+/g, ""),
+                    phone: doctor.phone,
                     email: doctor.email,
                     specialisation: doctor.specialisation,
                 });

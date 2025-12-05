@@ -13,15 +13,17 @@ import {
 } from "@/components/ui/card";
 
 export default function Show() {
+    const [appointment, setAppointment] = useState([]);
+    const [patient, setPatient] = useState([]);
     const [doctor, setDoctor] = useState([]);
     const { id } = useParams();
     const { token } = useAuth();
 
     useEffect(() => {
-        const fetchDoctor = async () => {
+        const fetchAppointment = async () => {
         const options = {
             method: "GET",
-            url: `/doctors/${id}`,
+            url: `/appointments/${id}`,
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -30,6 +32,29 @@ export default function Show() {
         try {
             let response = await axios.request(options);
             console.log(response.data);
+            setAppointment(response.data);
+        } catch (err) {
+            console.log(err);
+        }
+        };
+
+        fetchAppointment();
+    }, []);
+
+    useEffect(() => {
+        if (!appointment.doctor_id) return;
+        const fetchDoctor = async () => {
+        const options = {
+            method: "GET",
+            url: `/doctors/${appointment.doctor_id}`,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
+
+        try {
+            let response = await axios.request(options);
+            console.log("this is theeeee" + response.data);
             setDoctor(response.data);
         } catch (err) {
             console.log(err);
@@ -37,25 +62,47 @@ export default function Show() {
         };
 
         fetchDoctor();
-    }, []);
+    }, [appointment]);
+
+    useEffect(() => {
+        if (!appointment.patient_id) return;
+        const fetchPatient = async () => {
+        const options = {
+            method: "GET",
+            url: `/patients/${appointment.patient_id}`,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
+
+        try {
+            let response = await axios.request(options);
+            console.log("this is theeeee" + response.data);
+            setPatient(response.data);
+        } catch (err) {
+            console.log(err);
+        }
+        };
+
+        fetchPatient();
+    }, [appointment]);
 
     return (
         <Card className="w-full max-w-md">
             <CardHeader>
                 <CardTitle>Dr. {doctor.first_name} {doctor.last_name} </CardTitle>
+                <CardTitle>Dr. {patient.first_name} {patient.last_name} </CardTitle>
                 <CardDescription>
-                    {doctor.specialisation}
+                    Appointment on {new Date(appointment.appointment_date).toLocaleString()}
                 </CardDescription>
             </CardHeader>
             <CardContent>
 
-                <p><strong>Phone:</strong> {doctor.phone}</p>
-                <p><strong>Email:</strong> {doctor.email}</p>
                 <p className="text-sm text-muted-foreground">
-                    Joined: {new Date(doctor.createdAt).toLocaleString()}
+                    Created: {new Date(appointment.createdAt).toLocaleString()}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                    Updated: {new Date(doctor.updatedAt).toLocaleString()}
+                    Updated: {new Date(appointment.updatedAt).toLocaleString()}
                 </p>
 
             </CardContent>

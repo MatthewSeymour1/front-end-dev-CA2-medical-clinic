@@ -2,10 +2,8 @@ import axios from "@/config/api";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router";
 
-import { ChevronDownIcon } from "lucide-react"
-import { Calendar } from "@/components/ui/calendar"
-import { Label } from "@/components/ui/label"
-import { format } from "date-fns";
+import { IconCalendarWeek } from "@tabler/icons-react";
+import { Calendar } from "@/components/ui/calendar";
 
 import { useForm, Controller } from "react-hook-form";
 import * as z from "zod";
@@ -97,6 +95,7 @@ export default function Create() {
         let formattedData = {
             ...data,
             phone: data.phone.replace(/\s+/g, ""),
+            date_of_birth: new Date(data.date_of_birth).toISOString().split("T")[0],
         };
         console.log("Formatted Data");
         console.log(formattedData);
@@ -212,44 +211,44 @@ export default function Create() {
                             )}
                         />
 
-<Controller 
-    name="date_of_birth"
-    control={form.control}
-    render={({ field, fieldState }) => (
-        <Field data-invalid={fieldState.invalid}>
-            <FieldLabel>Date of Birth</FieldLabel>
+                        <Controller 
+                            name="date_of_birth"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel>Date of Birth</FieldLabel>
 
-            <Popover>
-                <PopoverTrigger asChild>
-                    <Button
-                        variant="outline"
-                        className="w-[280px] justify-between text-left font-normal;"
-                    >
-                        {field.value ? field.value : <span className="text-muted-foreground">Pick a date</span>}
-                        <ChevronDownIcon />
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                variant="outline"
+                                                className="w-[280px] justify-between text-left font-normal;"
+                                            >
+                                                {field.value ? field.value : <span className="text-muted-foreground">Pick a date</span>}
+                                                <IconCalendarWeek />
 
-                    </Button>
-                </PopoverTrigger>
+                                            </Button>
+                                        </PopoverTrigger>
 
-                <PopoverContent className="w-auto p-0">
-                    <Calendar
-                        mode="single"
-                        selected={field.value ? new Date(field.value) : undefined}
-                        onSelect={(date) => {
-                            if (date) {
-                                field.onChange(date.toISOString().split("T")[0]); // store as string
-                            }
-                        }}
-                    />
-                </PopoverContent>
-            </Popover>
+                                        <PopoverContent className="w-auto p-0">
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value ? new Date(field.value) : undefined}
+                                                onSelect={(date) => {
+                                                    if (date) {
+                                                        field.onChange(date.toISOString().split("T")[0]); // store as string
+                                                    }
+                                                }}
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
 
-            {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} />
-            )}
-        </Field>
-    )}
-/>
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
 
 
                     </div>
