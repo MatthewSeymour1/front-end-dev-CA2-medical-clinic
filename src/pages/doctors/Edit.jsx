@@ -131,7 +131,7 @@ export default function Edit() {
         <>
             <Card className="w-full max-w-md mt-4">
                 <CardHeader>
-                    <CardTitle>Create a new Doctor</CardTitle>
+                    <CardTitle>Edit a Doctor</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form id="edit-doctor-form" onSubmit={form.handleSubmit(handleSubmit)}>

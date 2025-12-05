@@ -201,7 +201,7 @@ export default function Create() {
                                             {patients.map((patient) => {
                                                 return (
                                                     <SelectItem key={patient.id} value={String(patient.id)}>
-                                                        Dr. {patient.first_name} {patient.last_name}
+                                                        {patient.first_name} {patient.last_name}
                                                     </SelectItem>
                                                 )
                                             })}

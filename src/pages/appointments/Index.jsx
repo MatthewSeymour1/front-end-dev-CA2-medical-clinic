@@ -17,6 +17,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 // import {
 //   Card,
@@ -119,7 +120,7 @@ export default function Index() {
 
 
         <Table>
-            <TableCaption>A list of your recent invoices.</TableCaption>
+            {appointments.length < 1 && <TableCaption>Loading Content <Spinner /></TableCaption>}
             <TableHeader>
                 <TableRow>
                 <TableHead>Appointment Date</TableHead>
@@ -137,8 +138,8 @@ export default function Index() {
                         return (
                             <TableRow key={app.id}>
                                 <TableCell>{new Date(app.appointment_date * 1000).toLocaleString()}</TableCell>
-                                <TableCell>Dr {doctor.first_name + " " + doctor.last_name}</TableCell>
-                                <TableCell>{patient.first_name + " " + patient.last_name}</TableCell>
+                                <TableCell>{doctor ? `Dr ${doctor.first_name} ${doctor.last_name}` : <Spinner />}</TableCell>
+                                <TableCell>{patient ? `${patient.first_name} ${patient.last_name}` : <Spinner />}</TableCell>
                                 <TableCell>
                                     <div className="flex gap-2">
                                     <Button 
