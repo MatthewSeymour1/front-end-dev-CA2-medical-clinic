@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Eye, Pencil } from "lucide-react";
 import DeleteBtn from "@/components/DeleteBtn";
 import { Spinner } from "@/components/ui/spinner";
+import { useAuth } from "@/hooks/useAuth";
+
 
 import {
     Table,
@@ -18,10 +20,34 @@ import {
 import { toast } from "sonner";
 
 export default function Index() {
+    const [diagnoses, setDiagnoses] = useState([]);
     const [patients, setPatients] = useState([]);
 
     const navigate = useNavigate();
+    const token = useAuth();
 
+
+    useEffect(() => {
+        const fetchDiagnoses = async () => {
+        const options = {
+            method: "GET",
+            url: "/diagnoses",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        try {
+            let response = await axios.request(options);
+            console.log("diagnoses response.data isssss" + response.data);
+            setDiagnoses(response.data);
+        } catch (err) {
+            console.log(err);
+        }
+        };
+
+        fetchDiagnoses();
+    }, []);
 
     useEffect(() => {
         const fetchPatients = async () => {
@@ -43,58 +69,57 @@ export default function Index() {
     }, []);
 
     const onDeleteCallback = (id) => {
-        toast.success("Patient deleted successfully");
-        setPatients(patients.filter(patient => patient.id !== id));
+        toast.success("Diagnosis deleted successfully");
+        setDiagnoses(diagnoses.filter(diagnosis => diagnosis.id !== id));
     };
 
     return (
         <>
         
         <Button asChild variant='outline'className='mb-4 mr-auto block'>
-            <Link size='sm' to={`/patients/create`}>Create New Patient</Link>
+            <Link size='sm' to={`/diagnoses/create`}>Create New Diagnosis</Link>
         </Button>
 
 
         <Table>
-            {patients.length < 1 && <TableCaption>Loading Content <Spinner /></TableCaption>}
+            {diagnoses.length < 1 && <TableCaption>Loading Content <Spinner /></TableCaption>}
             <TableHeader>
                 <TableRow>
                     <TableHead>Name</TableHead>
-                    <TableHead>Phone Number</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Date of Birth</TableHead>
-                    <TableHead>Number of Appointments</TableHead>
+                    <TableHead>Condition</TableHead>
+                    <TableHead>Diagnosis Date</TableHead>
                     <TableHead></TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {patients.map((patient) => (
-                    <TableRow key={patient.id}>
-                        <TableCell>{patient.first_name + " " + patient.last_name}</TableCell>
-                        <TableCell>{patient.phone}</TableCell>
-                        <TableCell>{patient.email}</TableCell>
-                        <TableCell>{new Date (patient.date_of_birth).toISOString().split("T")[0]}</TableCell>
-                        <TableCell>{patient.appointments.length}</TableCell>
+                {diagnoses.map((diagnosis) => {
+                    const patient = patients.find(patient => patient.id === diagnosis.patient_id);
+                    return (
+                    <TableRow key={diagnosis.id}>
+                        <TableCell>{patient ? `${patient.first_name} ${patient.last_name}` : <Spinner />}</TableCell>
+                        <TableCell>{diagnosis.condition}</TableCell>
+                        <TableCell>{diagnosis.diagnosis_date}</TableCell>
                         <TableCell>
                             <div className="flex gap-2">
                             <Button 
                                 className="cursor-pointer hover:border-blue-500"
                                 variant="outline"
                                 size="icon"
-                                onClick={() => navigate(`/patients/${patient.id}`)}
+                                onClick={() => navigate(`/diagnoses/${diagnosis.id}`)}
                             ><Eye /></Button>
                             <Button 
                                 className="cursor-pointer hover:border-blue-500"
                                 variant="outline"
                                 size="icon"
-                                onClick={() => navigate(`/patients/${patient.id}/edit`)}
+                                onClick={() => navigate(`/diagnoses/${diagnosis.id}/edit`)}
                             ><Pencil /></Button>
-                            <DeleteBtn onDeleteCallback={onDeleteCallback} resource="patients" id={patient.id} />
+                            <DeleteBtn onDeleteCallback={onDeleteCallback} resource="diagnoses" id={diagnosis.id} />
                             </div>
 
                         </TableCell>
                     </TableRow>
-                ))}
+                    )
+                })}
             </TableBody>
         </Table>
         </>

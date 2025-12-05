@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Eye, Pencil } from "lucide-react";
 import DeleteBtn from "@/components/DeleteBtn";
+import { Spinner } from "@/components/ui/spinner";
 
 import {
     Table,
@@ -65,7 +66,7 @@ export default function Index() {
 
 
         <Table>
-            <TableCaption>A list of your recent invoices.</TableCaption>
+            {doctors.length < 1 && <TableCaption>Loading Content <Spinner /></TableCaption>}
             <TableHeader>
                 <TableRow>
                 <TableHead>Name</TableHead>

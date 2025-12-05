@@ -61,8 +61,6 @@ export default function Index() {
         
         fetchAppointments();
     }, []);
-
-
     useEffect(() => {
         const fetchDoctors = async () => {
             const options = {
@@ -81,8 +79,6 @@ export default function Index() {
 
         fetchDoctors();
     }, []);
-
-
     useEffect(() => {
         const fetchPatients = async () => {
         const options = {
