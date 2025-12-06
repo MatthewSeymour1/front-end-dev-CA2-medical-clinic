@@ -11,6 +11,8 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 export default function Show() {
     const [appointment, setAppointment] = useState([]);
@@ -93,7 +95,7 @@ export default function Show() {
                 <CardTitle>Dr. {doctor.first_name} {doctor.last_name} </CardTitle>
                 <CardTitle>Dr. {patient.first_name} {patient.last_name} </CardTitle>
                 <CardDescription>
-                    Appointment on {new Date(appointment.appointment_date).toLocaleString()}
+                    Appointment on {new Date(appointment.appointment_date * 1000).toLocaleString()}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -106,7 +108,10 @@ export default function Show() {
                 </p>
 
             </CardContent>
-            <CardFooter className="flex-col gap-2">
+            <CardFooter className="flex gap-2">
+                <Button asChild>
+                    <Link to={`/appointments`}>Back to Appointments</Link>
+                </Button>
             </CardFooter>
         </Card>
     );

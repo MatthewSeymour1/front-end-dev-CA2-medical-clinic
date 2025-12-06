@@ -64,9 +64,13 @@ export default function Show() {
 
 
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex gap-2">
                 <Button asChild>
                     <Link to={`/patients/${patient.id}/appointments`}>View Appointments</Link>
+                </Button>
+
+                <Button asChild>
+                    <Link to={`/patients`}>Back to Patients</Link>
                 </Button>
             </CardFooter>
         </Card>

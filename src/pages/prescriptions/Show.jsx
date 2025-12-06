@@ -11,6 +11,8 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 export default function Show() {
     const [prescription, setPrescription] = useState([]);
@@ -114,14 +116,12 @@ export default function Show() {
                 <CardTitle>{patient.first_name} {patient.last_name} </CardTitle>
             </CardHeader>
             <CardContent>
-
-                
                 <p><strong>Prescribing Doctor:</strong> Dr {doctor.first_name} {doctor.last_name}</p>
                 <p><strong>Condition:</strong> {diagnosis.condition}</p>
                 <p><strong>Medication:</strong> {prescription.medication}</p>
                 <p><strong>Dosage:</strong> {prescription.dosage}</p>
-                <p><strong>Start Date:</strong> {new Date(prescription.start_date).toLocaleString()}</p>
-                <p><strong>End Date:</strong> {new Date(prescription.end_date).toLocaleString()}</p>
+                <p><strong>Start Date:</strong> {new Date(prescription.start_date * 1000).toLocaleDateString()}</p>
+                <p><strong>End Date:</strong> {new Date(prescription.end_date * 1000).toLocaleDateString()}</p>
 
                 <p className="text-sm text-muted-foreground">
                     Created: {new Date(prescription.createdAt).toLocaleString()}
@@ -131,7 +131,10 @@ export default function Show() {
                 </p>
 
             </CardContent>
-            <CardFooter className="flex-col gap-2">
+            <CardFooter className="flex gap-2">
+                <Button asChild>
+                    <Link to={`/prescriptions`}>Back to Prescriptions</Link>
+                </Button>
             </CardFooter>
         </Card>
     );

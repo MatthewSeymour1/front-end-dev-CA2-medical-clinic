@@ -73,7 +73,7 @@ export default function Index() {
                         <TableCell>{patient.first_name + " " + patient.last_name}</TableCell>
                         <TableCell>{patient.phone}</TableCell>
                         <TableCell>{patient.email}</TableCell>
-                        <TableCell>{new Date (patient.date_of_birth).toISOString().split("T")[0]}</TableCell>
+                        <TableCell>{new Date (patient.date_of_birth * 1000).toLocaleDateString()}</TableCell>
                         <TableCell>{patient.appointments.length}</TableCell>
                         <TableCell>
                             <div className="flex gap-2">

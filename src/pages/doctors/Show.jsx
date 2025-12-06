@@ -11,6 +11,8 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 export default function Show() {
     const [doctor, setDoctor] = useState([]);
@@ -59,7 +61,10 @@ export default function Show() {
                 </p>
 
             </CardContent>
-            <CardFooter className="flex-col gap-2">
+            <CardFooter className="flex gap-2">
+                <Button asChild>
+                    <Link to={`/doctors`}>Back to Doctors</Link>
+                </Button>
             </CardFooter>
         </Card>
     );

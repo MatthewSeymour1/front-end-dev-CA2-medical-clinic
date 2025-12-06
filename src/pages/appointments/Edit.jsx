@@ -121,7 +121,7 @@ export default function Edit() {
                 form.reset({
                     doctor_id: String(appointment.doctor_id),
                     patient_id: String(appointment.patient_id),
-                    appointment_date: new Date (appointment.appointment_date).toISOString().split("T")[0],
+                    appointment_date: new Date(appointment.appointment_date).toISOString().split("T")[0],
                 });
             } catch (err) {
                 console.log(err);

@@ -75,7 +75,7 @@ export default function Show() {
             <CardContent>
 
                 <p><strong>Condition:</strong> {diagnosis.condition}</p>
-                <p><strong>Diagnosis Date:</strong> {new Date(diagnosis.diagnosis_date).toLocaleString()}</p>
+                <p><strong>Diagnosis Date:</strong> {new Date(diagnosis.diagnosis_date * 1000).toLocaleDateString()}</p>
                 <p className="text-sm text-muted-foreground">
                     Joined: {new Date(diagnosis.createdAt).toLocaleString()}
                 </p>
