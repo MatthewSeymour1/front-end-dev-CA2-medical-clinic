@@ -6,6 +6,7 @@ import {
   IconCalendarCheck,
   IconInnerShadowTop,
   IconStethoscope,
+  IconUserFilled,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
@@ -44,7 +45,7 @@ const data = {
     {
       title: "Patients",
       url: "/patients",
-      icon: IconPillFilled,
+      icon: IconUserFilled,
     },
     {
       title: "Appointments",
@@ -55,6 +56,11 @@ const data = {
       title: "Diagnoses",
       url: "/diagnoses",
       icon: IconStethoscope,
+    },
+    {
+      title: "Prescriptions",
+      url: "/prescriptions",
+      icon: IconPillFilled,
     },
   ],
 };

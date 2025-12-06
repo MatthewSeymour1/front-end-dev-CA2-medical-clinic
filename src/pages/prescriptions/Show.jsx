@@ -13,40 +13,18 @@ import {
 } from "@/components/ui/card";
 
 export default function Show() {
-    const [appointment, setAppointment] = useState([]);
+    const [prescription, setPrescription] = useState([]);
+    const [diagnosis, setDiagnosis] = useState([]);
     const [patient, setPatient] = useState([]);
     const [doctor, setDoctor] = useState([]);
     const { id } = useParams();
     const { token } = useAuth();
 
     useEffect(() => {
-        const fetchAppointment = async () => {
+        const fetchPrescription = async () => {
         const options = {
             method: "GET",
-            url: `/appointments/${id}`,
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-        };
-
-        try {
-            let response = await axios.request(options);
-            console.log(response.data);
-            setAppointment(response.data);
-        } catch (err) {
-            console.log(err);
-        }
-        };
-
-        fetchAppointment();
-    }, []);
-
-    useEffect(() => {
-        if (!appointment.doctor_id) return;
-        const fetchDoctor = async () => {
-        const options = {
-            method: "GET",
-            url: `/doctors/${appointment.doctor_id}`,
+            url: `/prescriptions/${id}`,
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -54,7 +32,51 @@ export default function Show() {
 
         try {
             let response = await axios.request(options);
-            console.log("this is theeeee" + response.data);
+            console.log(response.data);
+            setPrescription(response.data);
+        } catch (err) {
+            console.log(err);
+        }
+        };
+
+        fetchPrescription();
+    }, []);
+
+    useEffect(() => {
+        if (!prescription.diagnosis_id) return;
+        const fetchDiagnosis = async () => {
+        const options = {
+            method: "GET",
+            url: `/diagnoses/${prescription.diagnosis_id}`,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
+
+        try {
+            let response = await axios.request(options);
+            setDiagnosis(response.data);
+        } catch (err) {
+            console.log(err);
+        }
+        };
+
+        fetchDiagnosis();
+    }, [prescription]);
+
+    useEffect(() => {
+        if (!prescription.doctor_id) return;
+        const fetchDoctor = async () => {
+        const options = {
+            method: "GET",
+            url: `/doctors/${prescription.doctor_id}`,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
+
+        try {
+            let response = await axios.request(options);
             setDoctor(response.data);
         } catch (err) {
             console.log(err);
@@ -62,14 +84,14 @@ export default function Show() {
         };
 
         fetchDoctor();
-    }, [appointment]);
+    }, [prescription]);
 
     useEffect(() => {
-        if (!appointment.patient_id) return;
+        if (!prescription.patient_id) return;
         const fetchPatient = async () => {
         const options = {
             method: "GET",
-            url: `/patients/${appointment.patient_id}`,
+            url: `/patients/${prescription.patient_id}`,
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -77,7 +99,6 @@ export default function Show() {
 
         try {
             let response = await axios.request(options);
-            console.log("this is theeeee" + response.data);
             setPatient(response.data);
         } catch (err) {
             console.log(err);
@@ -85,24 +106,28 @@ export default function Show() {
         };
 
         fetchPatient();
-    }, [appointment]);
+    }, [prescription]);
 
     return (
         <Card className="w-full max-w-md">
             <CardHeader>
-                <CardTitle>Dr. {doctor.first_name} {doctor.last_name} </CardTitle>
-                <CardTitle>Dr. {patient.first_name} {patient.last_name} </CardTitle>
-                <CardDescription>
-                    Appointment on {new Date(appointment.appointment_date).toLocaleString()}
-                </CardDescription>
+                <CardTitle>{patient.first_name} {patient.last_name} </CardTitle>
             </CardHeader>
             <CardContent>
 
+                
+                <p><strong>Prescribing Doctor:</strong> Dr {doctor.first_name} {doctor.last_name}</p>
+                <p><strong>Condition:</strong> {diagnosis.condition}</p>
+                <p><strong>Medication:</strong> {prescription.medication}</p>
+                <p><strong>Dosage:</strong> {prescription.dosage}</p>
+                <p><strong>Start Date:</strong> {new Date(prescription.start_date).toLocaleString()}</p>
+                <p><strong>End Date:</strong> {new Date(prescription.end_date).toLocaleString()}</p>
+
                 <p className="text-sm text-muted-foreground">
-                    Created: {new Date(appointment.createdAt).toLocaleString()}
+                    Created: {new Date(prescription.createdAt).toLocaleString()}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                    Updated: {new Date(appointment.updatedAt).toLocaleString()}
+                    Updated: {new Date(prescription.updatedAt).toLocaleString()}
                 </p>
 
             </CardContent>
