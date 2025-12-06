@@ -24,7 +24,7 @@ export default function Index() {
     const [patients, setPatients] = useState([]);
 
     const navigate = useNavigate();
-    const token = useAuth();
+    const { token } = useAuth();
 
 
     useEffect(() => {
@@ -98,7 +98,7 @@ export default function Index() {
                     <TableRow key={diagnosis.id}>
                         <TableCell>{patient ? `${patient.first_name} ${patient.last_name}` : <Spinner />}</TableCell>
                         <TableCell>{diagnosis.condition}</TableCell>
-                        <TableCell>{diagnosis.diagnosis_date}</TableCell>
+                        <TableCell>{new Date(diagnosis.diagnosis_date * 1000).toLocaleString()}</TableCell>
                         <TableCell>
                             <div className="flex gap-2">
                             <Button 

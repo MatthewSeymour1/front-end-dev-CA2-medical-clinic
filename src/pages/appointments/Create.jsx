@@ -240,7 +240,7 @@ export default function Create() {
                                                 selected={field.value ? new Date(field.value) : undefined}
                                                 onSelect={(date) => {
                                                     if (date) {
-                                                        field.onChange(date.toISOString().split("T")[0]); // store as string
+                                                        field.onChange(date.toISOString().split("T")[0]);
                                                     }
                                                 }}
                                             />

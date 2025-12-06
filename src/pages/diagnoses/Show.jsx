@@ -16,30 +16,53 @@ import {
 
 export default function Show() {
     const [patient, setPatient] = useState([]);
+    const [diagnosis, setDiagnosis] = useState([]);
     const { id } = useParams();
     const { token } = useAuth();
 
     useEffect(() => {
-        const fetchPatient = async () => {
-        const options = {
-            method: "GET",
-            url: `/patients/${id}`,
-            headers: {
-                Authorization: `Bearer ${token}`
+        const fetchDiagnosis = async () => {
+            const options = {
+                method: "GET",
+                url: `/diagnoses/${id}`,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            };
+
+            try {
+                let response = await axios.request(options);
+                setDiagnosis(response.data);
+            } catch (err) {
+                console.log(err);
             }
         };
 
-        try {
-            let response = await axios.request(options);
-            console.log(response.data);
-            setPatient(response.data);
-        } catch (err) {
-            console.log(err);
-        }
+        fetchDiagnosis();
+    }, []);
+
+    useEffect(() => {
+        if (!diagnosis?.patient_id) return;
+        const fetchPatient = async () => {
+            const options = {
+                method: "GET",
+                url: `/patients/${diagnosis.patient_id}`,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            };
+
+            try {
+                let response = await axios.request(options);
+                console.log(response.data);
+                setPatient(response.data);
+            } catch (err) {
+                console.log(err);
+            }
         };
 
         fetchPatient();
-    }, []);
+    }, [diagnosis]);
 
     return (
         <Card className="w-full max-w-md">
@@ -51,22 +74,20 @@ export default function Show() {
             </CardHeader>
             <CardContent>
 
-                <p><strong>Phone:</strong> {patient.phone}</p>
-                <p><strong>Email:</strong> {patient.email}</p>
-                <p><strong>Address:</strong> {patient.address}</p>
-                <p><strong>Date of Birth:</strong> {new Date(patient.date_of_birth * 1000).toLocaleDateString()}</p>
+                <p><strong>Condition:</strong> {diagnosis.condition}</p>
+                <p><strong>Diagnosis Date:</strong> {new Date(diagnosis.diagnosis_date).toLocaleString()}</p>
                 <p className="text-sm text-muted-foreground">
-                    Joined: {new Date(patient.createdAt).toLocaleString()}
+                    Joined: {new Date(diagnosis.createdAt).toLocaleString()}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                    Updated: {new Date(patient.updatedAt).toLocaleString()}
+                    Updated: {new Date(diagnosis.updatedAt).toLocaleString()}
                 </p>
 
 
             </CardContent>
             <CardFooter>
                 <Button asChild>
-                    <Link to={`/patients/${patient.id}/appointments`}>View Appointments</Link>
+                    <Link to={`/diagnoses`}>Back to Diagnoses</Link>
                 </Button>
             </CardFooter>
         </Card>

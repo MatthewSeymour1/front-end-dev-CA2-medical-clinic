@@ -1,6 +1,7 @@
 import axios from "@/config/api";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router";
+import { useEffect, useState } from "react";
 
 import { IconCalendarWeek } from "@tabler/icons-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -43,32 +44,27 @@ export default function Create() {
 
     const navigate = useNavigate();
     const { token } = useAuth();
+    const [patients, setPatients] = useState([]);
     const formSchema = z.object({
-        first_name: z.string().min(1, "First name is required"),
-        last_name: z.string().min(1, "Last name is required"),
-        phone: z.string().min(1, "Phone is required").max(11, "Phone number is too long"),
-        email: z.string().email("Invalid email address"),
-        address: z.string().min(1, "Address is required"),
-        date_of_birth: z.string().min(1, "Date of Birth is required"),
+        condition: z.string().min(1, "First name is required"),
+        diagnosis_date: z.string().min(1, "Last name is required"),
+        patient_id: z.string().min(1, "Patient is required"),
     });
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            first_name: "",
-            last_name: "",
-            phone: "",
-            email: "",
-            address: "",
-            date_of_birth: "",
+            condition: "",
+            diagnosis_date: "",
+            patient_id: "",
         },
         mode: "onChange",
     });
 
-    const createPatient = async (data) => {
+    const createDiagnosis = async (data) => {
 
         const options = {
             method: "POST",
-            url: `/patients`,
+            url: `/diagnoses`,
             headers: {
                 Authorization: `Bearer ${token}`
             },
@@ -78,49 +74,71 @@ export default function Create() {
         try {
             let response = await axios.request(options);
             console.log(response.data);
-            navigate('/patients', { state: { 
+            navigate('/diagnoses', { state: { 
                 type: 'success',
-                message: `Patient "${response.data.first_name}" created successfully` 
+                message: `Diagnosis "${response.data.condition}" created successfully` 
             }});
         } catch (err) {
             console.log(err);
             console.log("ZOD ISSUES:", err.response?.data?.error?.issues);
         }
-
     };
+
+    useEffect(() => {
+        const fetchPatients = async () => {
+            const options = {
+                method: "GET",
+                url: `/patients`,
+                headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            };
+
+            try {
+                let response = await axios.request(options);
+                console.log(response.data);
+                setPatients(response.data);
+            } catch (err) {
+                console.log(err);
+                console.log("ZOD ISSUES:", err.response?.data?.error?.issues);
+            }
+        };
+
+        fetchPatients();
+    }, []);
 
     const handleSubmit = (data) => {
         console.log(data);
 
         let formattedData = {
             ...data,
-            phone: data.phone.replace(/\s+/g, ""),
-            date_of_birth: new Date(data.date_of_birth).toISOString().split("T")[0],
+            patient_id: Number(data.patient_id),
+            diagnosis_date: new Date(data.diagnosis_date).toISOString().split("T")[0],
         };
         console.log("Formatted Data");
         console.log(formattedData);
-        createPatient(formattedData);
+        createDiagnosis(formattedData);
     };
 
   return (
     <>
         <Card className="w-full max-w-md mt-4">
             <CardHeader>
-                <CardTitle>Create a new Patient</CardTitle>
+                <CardTitle>Create a new Diagnosis</CardTitle>
             </CardHeader>
             <CardContent>
-                <form id="create-patient-form" onSubmit={form.handleSubmit(handleSubmit)}>
+                <form id="create-diagnosis-form" onSubmit={form.handleSubmit(handleSubmit)}>
                     <div className="flex flex-col gap-6">
                         <Controller 
-                            name="first_name"
+                            name="condition"
                             control={form.control}
                             render={({ field, fieldState }) => (
                                 <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel>First Name</FieldLabel>
+                                    <FieldLabel>Condition</FieldLabel>
                                     <Input
-                                        id="first_name"
+                                        id="condition"
                                         {...field}
-                                        placeholder="First Name"
+                                        placeholder="Condition"
                                         aria-invalid={fieldState.invalid}
                                     />
 
@@ -132,91 +150,11 @@ export default function Create() {
                         />
 
                         <Controller 
-                            name="last_name"
+                            name="diagnosis_date"
                             control={form.control}
                             render={({ field, fieldState }) => (
                                 <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel>Last Name</FieldLabel>
-                                    <Input
-                                        id="last_name"
-                                        {...field}
-                                        placeholder="Last Name"
-                                        aria-invalid={fieldState.invalid}
-                                    />
-
-                                    {fieldState.invalid && (
-                                        <FieldError errors={[fieldState.error]} />
-                                    )}
-                                </Field>
-                            )}
-                        />
-
-                        <Controller 
-                            name="phone"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel>Phone Number</FieldLabel>
-                                    <Input
-                                        id="phone"
-                                        {...field}
-                                        placeholder="Phone Number"
-                                        aria-invalid={fieldState.invalid}
-                                    />
-
-                                    {fieldState.invalid && (
-                                        <FieldError errors={[fieldState.error]} />
-                                    )}
-                                </Field>
-                            )}
-                        />
-
-                        <Controller 
-                            name="email"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel>Email</FieldLabel>
-                                    <Input
-                                        id="email"
-                                        {...field}
-                                        placeholder="Email"
-                                        aria-invalid={fieldState.invalid}
-                                    />
-
-                                    {fieldState.invalid && (
-                                        <FieldError errors={[fieldState.error]} />
-                                    )}
-                                </Field>
-                            )}
-                        />
-
-                        <Controller 
-                            name="address"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel>Address</FieldLabel>
-                                    <Input
-                                        id="address"
-                                        {...field}
-                                        placeholder="Address"
-                                        aria-invalid={fieldState.invalid}
-                                    />
-
-                                    {fieldState.invalid && (
-                                        <FieldError errors={[fieldState.error]} />
-                                    )}
-                                </Field>
-                            )}
-                        />
-
-                        <Controller 
-                            name="date_of_birth"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel>Date of Birth</FieldLabel>
+                                    <FieldLabel>Diagnosis Date</FieldLabel>
 
                                     <Popover>
                                         <PopoverTrigger asChild>
@@ -236,7 +174,7 @@ export default function Create() {
                                                 selected={field.value ? new Date(field.value) : undefined}
                                                 onSelect={(date) => {
                                                     if (date) {
-                                                        field.onChange(date.toISOString().split("T")[0]); // store as string
+                                                        field.onChange(date.toISOString().split("T")[0]);
                                                     }
                                                 }}
                                             />
@@ -250,6 +188,39 @@ export default function Create() {
                             )}
                         />
 
+                        <Controller 
+                            name="patient_id"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel>Patient</FieldLabel>
+                                    <Select
+                                        name={field.name}
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <SelectTrigger aria-invalid={fieldState.invalid}>
+                                            <SelectValue placeholder="Select Patient" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {patients.map((patient) => {
+                                                return (
+                                                    <SelectItem key={patient.id} value={String(patient.id)}>
+                                                        {patient.first_name} {patient.last_name}
+                                                    </SelectItem>
+                                                )
+                                            })}
+                                        </SelectContent>
+                                    </Select>
+
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
+
+
 
                     </div>
                 </form>
@@ -257,7 +228,7 @@ export default function Create() {
             <CardFooter>
                 <Button
                     className="w-full cursor-pointer"
-                    form="create-patient-form"
+                    form="create-diagnosis-form"
                     variant="outline"
                     type="submit"
                 >Submit</Button>
