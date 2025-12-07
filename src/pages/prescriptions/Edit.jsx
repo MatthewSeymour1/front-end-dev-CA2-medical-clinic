@@ -36,11 +36,12 @@ import { Input } from "@/components/ui/input";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 
-export default function Create() {
+export default function Edit() {
     const [doctors, setDoctors] = useState([]);
     const [patients, setPatients] = useState([]);
     const [prescription, setPrescription] = useState([]);
     const [diagnoses, setDiagnoses] = useState([]);
+    const [diagnosis, setDiagnosis] = useState([]);
     const [patientSelected, setPatientSelected] = useState("");
     const navigate = useNavigate();
     const { token } = useAuth();
@@ -81,7 +82,7 @@ export default function Create() {
 
             try {
                 let response = await axios.request(options);
-                console.log(response.data);
+                // console.log(response.data);
                 setDoctors(response.data);
             } catch (err) {
                 console.log(err);
@@ -106,7 +107,7 @@ export default function Create() {
 
             try {
                 let response = await axios.request(options);
-                console.log(response.data);
+                // console.log(response.data);
                 setPatients(response.data);
             } catch (err) {
                 console.log(err);
@@ -116,37 +117,6 @@ export default function Create() {
 
         fetchPatients();
     }, []);
-
-    // Fetch Diagnosis data, specifically for the Condition. For the Select Options. but will need have the options be only the conditions that the selected patient has been diagnosed with.
-    useEffect(() => {
-        const fetchDiagnoses = async () => {
-            const options = {
-                method: "GET",
-                url: `/diagnoses`,
-                headers: {
-                Authorization: `Bearer ${token}`,
-                },
-            };
-
-            try {
-                let response = await axios.request(options);
-                console.log("diagnosessss areee");
-                console.log(response.data);
-                let diagnosesArray = response.data;
-                let filteredArray = diagnosesArray.filter((diagnosis) => {
-                    return Number(diagnosis.patient_id) === Number(prescription.patient_id); 
-                });
-                console.log(filteredArray);
-                console.log(prescription.id);
-                setDiagnoses(filteredArray);
-            } catch (err) {
-                console.log(err);
-                console.log("ZOD ISSUES:", err.response?.data?.error?.issues);
-            }
-        };
-
-        fetchDiagnoses();
-    }, [patientSelected]);
 
     // Fetch Prescription Data to pre-set the form with the data.
     useEffect(() => {
@@ -162,7 +132,7 @@ export default function Create() {
             try {
                 // if (!doctors.length || !diagnoses.length) return;
                 let response = await axios.request(options);
-                console.log(response.data);
+                // console.log(response.data);
                 let prescription = response.data;
                 setPrescription(prescription);
                 setPatientSelected(String(prescription.patient_id));
@@ -186,6 +156,61 @@ export default function Create() {
         fetchPrescription();
     }, []);
 
+    // Fetch Diagnosis data, specifically for the Condition. For the Select Options. but will need have the options be only the conditions that the selected patient has been diagnosed with.
+    useEffect(() => {
+        const fetchDiagnoses = async () => {
+            const options = {
+                method: "GET",
+                url: `/diagnoses`,
+                headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            };
+
+            try {
+                let response = await axios.request(options);
+                // console.log(response.data);
+                let diagnosesArray = response.data;
+                let filteredArray = diagnosesArray.filter((diagnosis) => {
+                    return Number(diagnosis.patient_id) === Number(prescription.patient_id); 
+                });
+                // console.log(filteredArray);
+                // console.log(prescription.id);
+                setDiagnoses(filteredArray);
+            } catch (err) {
+                console.log(err);
+                console.log("ZOD ISSUES:", err.response?.data?.error?.issues);
+            }
+        };
+
+        fetchDiagnoses();
+    }, [patientSelected]);
+
+    // Fetch single Diagnosis to pre-set the Condition select field.
+    useEffect(() => {
+        if (!prescription.diagnosis_id) return;
+        const fetchDiagnosis = async () => {
+            const options = {
+                method: "GET",
+                url: `/diagnoses/${prescription.diagnosis_id}`,
+                headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            };
+
+            try {
+                let response = await axios.request(options);
+                console.log("single diagnosissssuuuuu areee");
+                console.log(response.data);
+                setDiagnosis(response.data);
+            } catch (err) {
+                console.log(err);
+                console.log("ZOD ISSUES:", err.response?.data?.error?.issues);
+            }
+        };
+
+        fetchDiagnosis();
+    }, [prescription]);
 
     const updatePrescription = async (data) => {
         const options = {
@@ -312,17 +337,27 @@ export default function Create() {
                                     <FieldLabel>Condition</FieldLabel>
                                     <Select
                                         name={field.name}
-                                        onValueChange={field.onChange}
+                                        onValueChange={(value) => {
+                                            field.onChange(value);
+                                            console.log(value);
+                                            console.log("diagnosis is");
+                                            console.log(diagnosis);
+                                            console.log("diagnoses are");
+                                            console.log(diagnoses);
+                                        }}
                                         value={field.value}
                                     >
                                         <SelectTrigger aria-invalid={fieldState.invalid}>
                                             <SelectValue placeholder="Select Condition" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {diagnoses.map((diagnosis) => {
+                                            <SelectItem key={diagnosis.id} value={String(diagnosis.id)}>
+                                                {diagnosis.condition}
+                                            </SelectItem>
+                                            {diagnoses.map((singularDiagnosis) => {
                                                 return (
-                                                    <SelectItem key={diagnosis.id} value={String(diagnosis.id)}>
-                                                        {diagnosis.condition}
+                                                    <SelectItem key={singularDiagnosis.id} value={String(singularDiagnosis.id)}>
+                                                        {singularDiagnosis.condition}
                                                     </SelectItem>
                                                 )
                                             })}
