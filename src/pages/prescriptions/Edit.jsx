@@ -108,6 +108,8 @@ export default function Edit() {
             try {
                 let response = await axios.request(options);
                 // console.log(response.data);
+                console.log("THE PATIENT ID IS HOPEFULLY 107:");
+                console.log(response.data);
                 setPatients(response.data);
             } catch (err) {
                 console.log(err);
@@ -172,6 +174,12 @@ export default function Edit() {
                 // console.log(response.data);
                 let diagnosesArray = response.data;
                 let filteredArray = diagnosesArray.filter((diagnosis) => {
+                    if (Number(diagnosis.patient_id) === Number(prescription.patient_id)) {
+                        console.log("Diagnosis patient id:");
+                        console.log(diagnosis.patient_id);
+                        console.log("Selected Prescription patient id:");
+                        console.log(prescription.patient_id);
+                    }
                     return Number(diagnosis.patient_id) === Number(prescription.patient_id); 
                 });
                 // console.log(filteredArray);
