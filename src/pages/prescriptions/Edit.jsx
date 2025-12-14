@@ -158,6 +158,30 @@ export default function Edit() {
         fetchPrescription();
     }, []);
 
+    // Fetch single Diagnosis to pre-set the Condition select field.
+    useEffect(() => {
+        if (!prescription.diagnosis_id) return;
+        const fetchDiagnosis = async () => {
+            const options = {
+                method: "GET",
+                url: `/diagnoses/${prescription.diagnosis_id}`,
+                headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            };
+
+            try {
+                let response = await axios.request(options);
+                setDiagnosis(response.data);
+            } catch (err) {
+                console.log(err);
+                console.log("ZOD ISSUES:", err.response?.data?.error?.issues);
+            }
+        };
+
+        fetchDiagnosis();
+    }, [prescription]);
+
     // Fetch Diagnosis data, specifically for the Condition. For the Select Options. but will need have the options be only the conditions that the selected patient has been diagnosed with.
     useEffect(() => {
         const fetchDiagnoses = async () => {
@@ -174,17 +198,35 @@ export default function Edit() {
                 // console.log(response.data);
                 let diagnosesArray = response.data;
                 let filteredArray = diagnosesArray.filter((diagnosis) => {
-                    if (Number(diagnosis.patient_id) === Number(prescription.patient_id)) {
-                        console.log("Diagnosis patient id:");
-                        console.log(diagnosis.patient_id);
-                        console.log("Selected Prescription patient id:");
-                        console.log(prescription.patient_id);
-                    }
+                    // if (Number(diagnosis.patient_id) === Number(prescription.patient_id)) {
+                    //     console.log("Diagnosis patient id:");
+                    //     console.log(diagnosis.patient_id);
+                    //     console.log("Selected Prescription patient id:");
+                    //     console.log(prescription.patient_id);
+                    // }
                     return Number(diagnosis.patient_id) === Number(prescription.patient_id); 
                 });
+                if (diagnosis.id) {
+                    filteredArray.push(diagnosis);
+                    let seen = {};
+                    let uniqueFilteredArray = filteredArray.filter((item) => {
+                        if (seen[item.id]) {
+                            return false;
+                        }
+                        else {
+                            seen[item.id] = true;
+                            return true;
+                        }
+                    });
+                    setDiagnoses(uniqueFilteredArray);
+                }
+                else {
+                    setDiagnoses(filteredArray);
+                }
+
                 // console.log(filteredArray);
                 // console.log(prescription.id);
-                setDiagnoses(filteredArray);
+
             } catch (err) {
                 console.log(err);
                 console.log("ZOD ISSUES:", err.response?.data?.error?.issues);
@@ -192,33 +234,19 @@ export default function Edit() {
         };
 
         fetchDiagnoses();
-    }, [patientSelected]);
+    }, [patientSelected, diagnosis]);
 
-    // Fetch single Diagnosis to pre-set the Condition select field.
     useEffect(() => {
-        if (!prescription.diagnosis_id) return;
-        const fetchDiagnosis = async () => {
-            const options = {
-                method: "GET",
-                url: `/diagnoses/${prescription.diagnosis_id}`,
-                headers: {
-                Authorization: `Bearer ${token}`,
-                },
-            };
-
-            try {
-                let response = await axios.request(options);
-                console.log("single diagnosissssuuuuu areee");
-                console.log(response.data);
-                setDiagnosis(response.data);
-            } catch (err) {
-                console.log(err);
-                console.log("ZOD ISSUES:", err.response?.data?.error?.issues);
-            }
-        };
-
-        fetchDiagnosis();
-    }, [prescription]);
+        if (diagnosis.id) {
+            form.setValue("diagnosis_id", String(diagnosis.id), {
+                shouldValidate: true,
+                shouldDirty: true,
+            });
+        }
+        else {
+            console.log("HELPPPPP");
+        }
+      }, [diagnoses, diagnosis]);
 
     const updatePrescription = async (data) => {
         const options = {
@@ -359,16 +387,15 @@ export default function Edit() {
                                             <SelectValue placeholder="Select Condition" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem key={diagnosis.id} value={String(diagnosis.id)}>
-                                                {diagnosis.condition}
-                                            </SelectItem>
-                                            {diagnoses.map((singularDiagnosis) => {
-                                                return (
-                                                    <SelectItem key={singularDiagnosis.id} value={String(singularDiagnosis.id)}>
-                                                        {singularDiagnosis.condition}
-                                                    </SelectItem>
-                                                )
-                                            })}
+                                            {
+                                                diagnoses.map((singularDiagnosis) => {
+                                                    return (
+                                                        <SelectItem key={singularDiagnosis.id} value={String(singularDiagnosis.id)}>
+                                                            {singularDiagnosis.condition}
+                                                        </SelectItem>
+                                                    )
+                                                })
+                                            }
                                         </SelectContent>
                                     </Select>
 
