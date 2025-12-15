@@ -243,9 +243,6 @@ export default function Edit() {
                 shouldDirty: true,
             });
         }
-        else {
-            console.log("HELPPPPP");
-        }
       }, [diagnoses, diagnosis]);
 
     const updatePrescription = async (data) => {
