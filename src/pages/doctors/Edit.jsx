@@ -38,9 +38,9 @@ export default function Edit() {
     const navigate = useNavigate();
     const { id } = useParams();
     const formSchema = z.object({
-        first_name: z.string().min(1, "First name is required"),
-        last_name: z.string().min(1, "Last name is required"),
-        phone: z.string().min(1, "Phone is required").max(11, "Phone number is too long"),
+        first_name: z.string().min(1, "First name is required").max(15, "First name is too long"),
+        last_name: z.string().min(1, "Last name is required").max(15, "Last name is too long"),
+        phone: z.string().min(10, "Phone must be 10 characters").max(10, "Phone must be 10 characters"),
         email: z.string().email("Invalid email address"),
         specialisation: z.enum([
             "Podiatrist", 

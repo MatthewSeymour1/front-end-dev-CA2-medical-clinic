@@ -44,9 +44,9 @@ export default function Create() {
     const navigate = useNavigate();
     const { token } = useAuth();
     const formSchema = z.object({
-        first_name: z.string().min(1, "First name is required"),
-        last_name: z.string().min(1, "Last name is required"),
-        phone: z.string().min(1, "Phone is required").max(11, "Phone number is too long"),
+        first_name: z.string().min(1, "First name is required").max(15, "First name is too long"),
+        last_name: z.string().min(1, "Last name is required").max(15, "Last name is too long"),
+        phone: z.string().min(10, "Phone is required").max(10, "Phone number is too long"),
         email: z.string().email("Invalid email address"),
         address: z.string().min(1, "Address is required"),
         date_of_birth: z.string().min(1, "Date of Birth is required"),

@@ -46,8 +46,8 @@ export default function Create() {
     const { token } = useAuth();
     const [patients, setPatients] = useState([]);
     const formSchema = z.object({
-        condition: z.string().min(1, "First name is required"),
-        diagnosis_date: z.string().min(1, "Last name is required"),
+        condition: z.string().min(1, "Condition is required"),
+        diagnosis_date: z.string().min(1, "You must pick a date"),
         patient_id: z.string().min(1, "Patient is required"),
     });
     const form = useForm({

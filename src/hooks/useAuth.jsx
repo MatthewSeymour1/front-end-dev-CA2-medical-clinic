@@ -42,6 +42,27 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const onRegister = async (first_name, last_name, email, password) => {
+        const options = {
+            method: "POST",
+            url: "/register",
+            data: {
+                first_name,
+                last_name,
+                email,
+                password
+            }
+        };
+
+        try {
+            await axios.request(options);
+            await onLogin(email, password);
+        } catch (err) {
+            console.log(err.response.data);
+
+        }
+    };
+
     const onLogout = () => {
         setToken(null);
         localStorage.removeItem("token");
@@ -50,7 +71,8 @@ export const AuthProvider = ({ children }) => {
     const value = {
         token,
         onLogin,
-        onLogout
+        onLogout,
+        onRegister
     };
 
 

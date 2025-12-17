@@ -93,7 +93,7 @@ export default function Show() {
         <Card className="w-full max-w-md">
             <CardHeader>
                 <CardTitle>Dr. {doctor.first_name} {doctor.last_name} </CardTitle>
-                <CardTitle>Dr. {patient.first_name} {patient.last_name} </CardTitle>
+                <CardTitle>{patient.first_name} {patient.last_name} </CardTitle>
                 <CardDescription>
                     Appointment on {new Date(appointment.appointment_date * 1000).toLocaleString()}
                 </CardDescription>
