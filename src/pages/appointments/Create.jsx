@@ -120,7 +120,7 @@ export default function Create() {
             console.log(response.data);
             navigate('/appointments', { state: { 
                 type: 'success',
-                message: `Appointment "${response.data.appointment_date}" created successfully` 
+                message: `Appointment "${new Date(response.data.appointment_date).toISOString().split("T")[0]}" created successfully` 
             }});
         } catch (err) {
             console.log(err);

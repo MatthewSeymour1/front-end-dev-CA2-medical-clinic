@@ -9,17 +9,8 @@ export default function DeleteBtn({ resource, id, onDeleteCallback }) {
     let token = localStorage.getItem('token');
 
     const onDelete = async () => {
-        const options = {
-            method: "DELETE",
-            url: `/${resource}/${id}`,
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-      };
 
       try {
-        let response = await axios.request(options);
-        console.log(response.data);
         if (onDeleteCallback) {
             onDeleteCallback(id);
         }

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, Pencil } from "lucide-react";
 import DeleteBtn from "@/components/DeleteBtn";
 import { Spinner } from "@/components/ui/spinner";
+import { useAuth } from "@/hooks/useAuth";
 
 import {
     Table,
@@ -29,7 +30,7 @@ import { toast } from "sonner";
 
 export default function Index() {
     const [doctors, setDoctors] = useState([]);
-
+    const { token } = useAuth();
     const navigate = useNavigate();
 
 
@@ -52,9 +53,35 @@ export default function Index() {
         fetchDoctors();
     }, []);
 
-    const onDeleteCallback = (id) => {
-        toast.success("Doctor deleted successfully");
-        setDoctors(doctors.filter(doctor => doctor.id !== id));
+    const onDeleteCallback = async (id) => {
+        try {
+            const authHeaders = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+
+            const [appointmentsRes] = await Promise.all([
+                axios.get("/appointments", authHeaders),
+            ]);
+
+            const appointments = appointmentsRes.data.filter(
+                appointment => Number(appointment.doctor_id) === Number(id)
+            );
+
+            await Promise.all(
+                appointments.map(appointment => axios.delete(`/appointments/${appointment.id}`, authHeaders))
+            )
+
+            await axios.delete(`/doctors/${id}`, authHeaders)
+    
+            setDoctors(doctors.filter(doctor => doctor.id !== id));
+            toast.success("Doctor deleted successfully");
+        }
+        catch (err) {
+            console.error(err);
+            toast.error("Failed to delete doctor");
+        }
     };
 
     return (

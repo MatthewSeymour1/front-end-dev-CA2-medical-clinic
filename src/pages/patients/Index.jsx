@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, Pencil } from "lucide-react";
 import DeleteBtn from "@/components/DeleteBtn";
 import { Spinner } from "@/components/ui/spinner";
+import { useAuth } from "@/hooks/useAuth";
 
 import {
     Table,
@@ -19,32 +20,73 @@ import { toast } from "sonner";
 
 export default function Index() {
     const [patients, setPatients] = useState([]);
-
+    const { token } = useAuth();
     const navigate = useNavigate();
 
 
     useEffect(() => {
         const fetchPatients = async () => {
-        const options = {
-            method: "GET",
-            url: "/patients",
-        };
+            const options = {
+                method: "GET",
+                url: "/patients",
+            };
 
-        try {
-            let response = await axios.request(options);
-            console.log(response.data);
-            setPatients(response.data);
-        } catch (err) {
-            console.log(err);
-        }
+            try {
+                let response = await axios.request(options);
+                console.log(response.data);
+                setPatients(response.data);
+            } catch (err) {
+                console.log(err);
+            }
         };
 
         fetchPatients();
     }, []);
 
-    const onDeleteCallback = (id) => {
-        toast.success("Patient deleted successfully");
-        setPatients(patients.filter(patient => patient.id !== id));
+    const onDeleteCallback = async (id) => {
+
+        try {
+            const authHeaders = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+
+            const [appointmentsRes, prescriptionsRes, diagnosesRes] = await Promise.all([
+                axios.get("/appointments", authHeaders),
+                axios.get("/prescriptions", authHeaders),
+                axios.get("/diagnoses", authHeaders),
+            ]);
+
+            const appointments = appointmentsRes.data.filter(
+                appointment => Number(appointment.patient_id) === Number(id)
+            );
+            const prescriptions = prescriptionsRes.data.filter(
+                prescription => Number(prescription.patient_id) === Number(id)
+            );
+            const diagnoses = diagnosesRes.data.filter(
+                diagnosis => Number(diagnosis.patient_id) === Number(id)
+            );
+
+            await Promise.all(
+                prescriptions.map(prescription => axios.delete(`/prescriptions/${prescription.id}`, authHeaders))
+            )
+            await Promise.all(
+                appointments.map(appointment => axios.delete(`/appointments/${appointment.id}`, authHeaders))
+            )
+            await Promise.all(
+                diagnoses.map(diagnosis => axios.delete(`/diagnoses/${diagnosis.id}`, authHeaders))
+            )
+    
+            await axios.delete(`/patients/${id}`, authHeaders)
+    
+            setPatients(patients.filter(patient => patient.id !== id));
+            toast.success("Patient deleted successfully");
+        }
+        catch (err) {
+            console.error(err);
+            toast.error("Failed to delete patient");
+        }
     };
 
     return (

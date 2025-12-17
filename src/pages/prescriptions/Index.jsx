@@ -105,9 +105,23 @@ export default function Index() {
     }, []);
 
 
-    const onDeleteCallback = (id) => {
-        toast.success("Prescription deleted successfully");
-        setPrescriptions(prescriptions.filter(prescription => prescription.id !== id));
+    const onDeleteCallback = async (id) => {
+        try {
+            const authHeaders = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+
+            await axios.delete(`/prescriptions/${id}`, authHeaders)
+    
+            setPrescriptions(prescriptions.filter(prescription => prescription.id !== id));
+            toast.success("Prescription deleted successfully");
+        }
+        catch (err) {
+            console.error(err);
+            toast.error("Failed to delete prescription");
+        }
     };
 
     return (

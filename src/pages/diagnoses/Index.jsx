@@ -68,9 +68,35 @@ export default function Index() {
         fetchPatients();
     }, []);
 
-    const onDeleteCallback = (id) => {
-        toast.success("Diagnosis deleted successfully");
-        setDiagnoses(diagnoses.filter(diagnosis => diagnosis.id !== id));
+    const onDeleteCallback = async (id) => {
+        try {
+            const authHeaders = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+
+            const [prescriptionsRes] = await Promise.all([
+                axios.get("/prescriptions", authHeaders),
+            ]);
+
+            const prescriptions = prescriptionsRes.data.filter(
+                prescription => Number(prescription.diagnosis_id) === Number(id)
+            );
+
+            await Promise.all(
+                prescriptions.map(prescription => axios.delete(`/prescriptions/${prescription.id}`, authHeaders))
+            )
+
+            await axios.delete(`/diagnoses/${id}`, authHeaders)
+    
+            setDiagnoses(diagnoses.filter(diagnosis => diagnosis.id !== id));
+            toast.success("Diagnosis deleted successfully");
+        }
+        catch (err) {
+            console.error(err);
+            toast.error("Failed to delete diagnosis");
+        }
     };
 
     return (

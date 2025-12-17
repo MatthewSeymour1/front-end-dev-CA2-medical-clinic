@@ -98,13 +98,23 @@ export default function Index() {
         fetchPatients();
     }, []);
 
+    const onDeleteCallback = async (id) => {
+        try {
+            const authHeaders = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
 
-
-
-
-    const onDeleteCallback = (id) => {
-        toast.success("Appointment deleted successfully");
-        setAppointments(appointments.filter(appointment => appointment.id !== id));
+            await axios.delete(`/appointments/${id}`, authHeaders)
+    
+            setAppointments(appointments.filter(appointment => appointment.id !== id));
+            toast.success("Appointment deleted successfully");
+        }
+        catch (err) {
+            console.error(err);
+            toast.error("Failed to delete appointment");
+        }
     };
 
     return (
